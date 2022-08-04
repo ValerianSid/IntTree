@@ -1,4 +1,8 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Comparator;
+import java.util.NoSuchElementException;
 
 public class NodeManager {
 
@@ -6,8 +10,21 @@ public class NodeManager {
 
     private Comparator<Node> comparator;
 
+    private Integer lookingValue;
+    private BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+    ;
+
     public NodeManager(Comparator<Node> comparator) {
         this.comparator = comparator;
+    }
+
+    public Integer read() {
+        try {
+            return Integer.parseInt(bufferedReader.readLine());
+        } catch (IOException e) {
+            System.out.println("Произошла Ошибка. Повторите ввод");
+            return read();
+        }
     }
 
     public Node add(Integer value) {
@@ -23,9 +40,8 @@ public class NodeManager {
     }
 
     /**
-     *
-     * @param root - Текущая проверяемая нода, т.е. нода для которой
-     *             пытаемся добавить элемент в качестве наследника
+     * @param root  - Текущая проверяемая нода, т.е. нода для которой
+     *              пытаемся добавить элемент в качестве наследника
      * @param value - значение добавляемого элемента
      * @return - вновь созданную ноду
      */
@@ -60,7 +76,8 @@ public class NodeManager {
                     return node;
                 }
             }
-            default: return root;
+            default:
+                return root;
         }
     }
 
@@ -70,4 +87,92 @@ public class NodeManager {
                 compareResult < 0 ? Direction.LEFT :
                         Direction.EQUAL;
     }
+
+    public Integer get() {
+        lookingValue = read();
+        if (this.root == null) {
+            throw new NoSuchElementException();
+        }
+        return getLookingValue(this.root, lookingValue);
+    }
+
+    public Integer getLookingValue(Node root, Integer lookingValue) {
+        Direction direction = getDirection(lookingValue, root);
+        switch (direction) {
+            case LEFT: {
+                if (root.getLeft() != null) {
+                    return getLookingValue(root.getLeft(), lookingValue);
+                } else {
+                    throw new NoSuchElementException();
+                }
+            }
+            case RIGHT: {
+                if (root.getRight() != null) {
+                    return getLookingValue(root.getRight(), lookingValue);
+                } else {
+                    throw new NoSuchElementException();
+                }
+            }
+            case EQUAL:
+                return lookingValue;
+            default:
+                throw new NoSuchElementException();
+        }
+    }
+
+    public Integer maxNubmer() {
+        Integer maximum = root.getValue();
+        if (this.root == null) {
+            throw new NoSuchElementException();
+        }
+        return getMaxValue(this.root, maximum);
+    }
+
+    public Integer getMaxValue(Node root, Integer maximum) {
+        Direction direction = getDirection(maximum, root);
+        switch (direction) {
+            case LEFT: {
+                return maximum = root.getValue();
+            }
+            case RIGHT: {
+                if (root.getRight() != null) {
+                    maximum = root.getValue();
+                    return getLookingValue(root.getRight(), maximum);
+                } else {
+                    return maximum = root.getValue();
+                }
+            }
+            default:
+                return maximum = root.getValue();
+        }
+    }
+
+    public Integer minNubmer() {
+        if (this.root == null) {
+            throw new NoSuchElementException();
+        }
+        Integer minimum = root.getValue();
+        return getMinValue(this.root, minimum);
+    }
+
+    public Integer getMinValue(Node root, Integer minimum) {
+        Direction direction = getDirection(minimum, root);
+        minimum = root.getValue();
+        switch (direction) {
+            case LEFT: {
+                if (root.getRight() != null) {
+                    return getLookingValue(root.getLeft(), minimum);
+                } else {
+                    return minimum;
+                }
+
+            }
+            case RIGHT: {
+                return minimum;
+            }
+
+        }
+        return minimum;
+    }
+
 }

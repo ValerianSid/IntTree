@@ -14,5 +14,8 @@ public class Main {
             Node node = manager.add(random.nextInt(100));
             System.out.println(node);
         }
+        //System.out.println(manager.get());
+        //System.out.println(manager.maxNubmer());
+        System.out.println(manager.minNubmer());
     }
 }
